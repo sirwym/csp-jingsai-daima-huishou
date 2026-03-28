@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>竞赛回收系统</title>
+
+    <link rel="icon" href="/static/icon.ico" type="image/png">
+    <!-- TailwindCSS -->
+    <link href="/static/css/tailwind.css" rel="stylesheet">
+    <!-- marked.js 用于解析 Markdown -->
+    <script src="/static/js/marked.min.js"></script>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .countdown {
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    {% include 'login.html' %}
+    {% include 'dashboard.html' %}
+    {% include 'footer.html' %}
+    
+    <!-- 引入 JavaScript -->
+    <script src="/static/js/app.js?v=1.0.1"></script>
+</body>
+</html>

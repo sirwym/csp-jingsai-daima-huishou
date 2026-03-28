@@ -1,0 +1,58 @@
+<!-- 登录页面 -->
+<div id="login-page" class="min-h-screen bg-gray-100">
+    <!-- 顶部导航栏 -->
+    <nav class="bg-indigo-700 text-white shadow-md">
+        <div class="container mx-auto px-4 py-3 flex items-center">
+            <img src="/static/logo.png" alt="Logo" class="h-8 w-8 mr-3 object-contain rounded">
+            <div class="text-xl font-bold">竞赛回收系统</div>
+        </div>
+    </nav>
+    
+    <div class="container mx-auto px-4 py-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- 左侧：考试须知 -->
+            <div class="bg-white p-6 rounded-lg shadow">
+                <h2 class="text-xl font-bold mb-4">考试须知</h2>
+                <div id="login-instructions" class="prose prose-indigo max-w-none prose-sm md:prose-base mb-6"></div>
+                <div id="password-display" class="mb-6 hidden">
+                    <div class="bg-yellow-100 border-l-4 border-yellow-500 p-4">
+                        <div class="flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span class="font-bold">题目解压密码：</span>
+                            <span id="unzip-password" class="font-mono ml-2"></span>
+                        </div>
+                    </div>
+                </div>
+                <a href="/api/download/problems" download class="inline-flex items-center text-indigo-600 hover:text-indigo-800 underline">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    下载题目
+                </a>
+            </div>
+            
+            <!-- 右侧：登录框 -->
+            <div class="flex items-center justify-center">
+                <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+                    <h2 class="text-2xl font-bold text-center mb-6">用户登录</h2>
+                    <form id="login-form" class="space-y-4">
+                        <div>
+                            <label for="student-id" class="block text-sm font-medium text-gray-700">准考证号</label>
+                            <input type="text" id="student-id" name="student_id" placeholder="HA-001" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required>
+                        </div>
+                        <div>
+                            <label for="password" class="block text-sm font-medium text-gray-700">密码</label>
+                            <input type="password" id="password" name="password" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required>
+                        </div>
+                        <div>
+                            <button type="submit" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">登录</button>
+                        </div>
+                        <div id="login-error" class="text-red-500 text-sm hidden"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
