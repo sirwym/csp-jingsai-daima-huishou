@@ -630,6 +630,7 @@ async function confirmUpload() {
     }
 }
 
+
 // 查看代码
 async function viewCode(problemName) {
     try {
@@ -642,12 +643,27 @@ async function viewCode(problemName) {
         if (response.ok) {
             const data = await response.json();
             
+            // === 新增：HTML 转义函数，防止 C++ 的尖括号破坏 DOM 结构 ===
+            const escapeHTML = (str) => {
+                return str.replace(/[&<>'"]/g, 
+                    tag => ({
+                        '&': '&amp;',
+                        '<': '&lt;',
+                        '>': '&gt;',
+                        "'": '&#39;',
+                        '"': '&quot;'
+                    }[tag])
+                );
+            };
+            
             // 创建模态对话框
             const modal = document.createElement('div');
             modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+            
+            // === 修改：使用 escapeHTML(data.code) 渲染代码 ===
             modal.innerHTML = `
-                <div class="bg-white rounded-lg p-6 max-w-2xl w-full max-h-[80vh] overflow-auto">
-                    <div class="flex justify-between items-center mb-4">
+                <div class="bg-white rounded-lg p-6 max-w-2xl w-full max-h-[80vh] flex flex-col">
+                    <div class="flex justify-between items-center mb-4 shrink-0">
                         <h3 class="text-lg font-bold">查看代码 - ${data.filename}</h3>
                         <button onclick="this.closest('.fixed').remove()" class="text-gray-500 hover:text-gray-700">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -655,10 +671,20 @@ async function viewCode(problemName) {
                             </svg>
                         </button>
                     </div>
-                    <pre class="bg-gray-100 p-4 rounded-md overflow-x-auto"><code>${data.code}</code></pre>
+                    <div class="bg-gray-100 p-4 rounded-md flex-1 overflow-auto">
+                        <pre class="font-mono text-sm"><code class="language-cpp">${escapeHTML(data.code)}</code></pre>
+                    </div>
                 </div>
             `;
             document.body.appendChild(modal);
+            
+            // === 触发 highlight.js 进行代码高亮 ===
+            if (typeof hljs !== 'undefined') {
+                // 选中刚刚创建的 code 标签并进行高亮渲染
+                const codeBlock = modal.querySelector('code');
+                hljs.highlightElement(codeBlock);
+            }
+
         } else {
             const errorData = await response.json();
             alert(`查看失败: ${errorData.detail}`);
