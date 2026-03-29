@@ -29,19 +29,23 @@ jobs:
     - name: Install dependencies
       run: |
         pip install -r requirements.txt
+        pip install pyinstaller
         npm install
 
     - name: Build CSS
       run: npm run build:css
 
-    - name: Build application
+    # --- 核心修改部分：将打包步骤按操作系统拆分 ---
+    - name: Build application (Windows)
+      if: matrix.os == 'windows-latest'
+      run: build.bat
+
+    - name: Build application (macOS)
+      if: matrix.os == 'macos-latest'
       run: |
-        if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
-          ./build.bat
-        else
-          chmod +x ./build.sh
-          ./build.sh
-        fi
+        chmod +x ./build.sh
+        ./build.sh
+    # ----------------------------------------------
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
@@ -52,6 +56,11 @@ jobs:
   release:
     needs: build
     runs-on: ubuntu-latest
+    
+    # 这里的权限配置非常重要，确保 GitHub Actions 有权限创建 Release
+    permissions:
+      contents: write 
+
     steps:
     - uses: actions/checkout@v4
 
