@@ -35,7 +35,6 @@ jobs:
     - name: Build CSS
       run: npm run build:css
 
-    # --- 核心修改部分：将打包步骤按操作系统拆分 ---
     - name: Build application (Windows)
       if: matrix.os == 'windows-latest'
       shell: cmd
@@ -46,22 +45,33 @@ jobs:
       run: |
         chmod +x ./build.sh
         ./build.sh
-    # ----------------------------------------------
 
+    # --- 新增：把打包生成的文件压缩成 ZIP ---
+    - name: Zip build outputs (Windows)
+      if: matrix.os == 'windows-latest'
+      # 使用 PowerShell 将 dist 目录打包为 zip
+      run: powershell Compress-Archive -Path dist\* -DestinationPath contest-system-windows.zip
+
+    - name: Zip build outputs (macOS)
+      if: matrix.os == 'macos-latest'
+      # 使用 macOS 自带的 zip 命令
+      run: |
+        cd dist
+        zip -r ../contest-system-macos.zip .
+    # -------------------------------------
+
+    # 修改：这里不再上传整个 dist 目录，而是只上传刚才打包好的 zip 文件
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
         name: ${{ matrix.os }}-build
-        path: dist/
+        path: '*.zip' 
 
   release:
     needs: build
     runs-on: ubuntu-latest
-    
-    # 这里的权限配置非常重要，确保 GitHub Actions 有权限创建 Release
     permissions:
       contents: write 
-
     steps:
     - uses: actions/checkout@v4
 
@@ -73,8 +83,9 @@ jobs:
     - name: Create Release
       uses: softprops/action-gh-release@v2
       with:
+        # 修改：Release 页面只挂载 zip 文件，避免海量文件导致报错
         files: |
-          dist-artifacts/**/*
+          dist-artifacts/**/*.zip
         draft: false
         prerelease: false
       env:
