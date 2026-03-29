@@ -1,9 +1,9 @@
 # 竞赛回收系统 (CSP Contest Code Recovery System)
 
-!\[Python]\(<https://img.shields.io/badge/Python-3.13+-blue.svg> null)
-!\[FastAPI]\(<https://img.shields.io/badge/FastAPI-0.115+-green.svg> null)
-!\[PySide6]\(<https://img.shields.io/badge/PySide6-6.8+-orange.svg> null)
-!\[License]\(<https://img.shields.io/badge/License-MIT-yellow.svg> null)
+![Python](https://img.shields.io/badge/Python-3.13+-blue.svg)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-green.svg)
+![PySide6](https://img.shields.io/badge/PySide6-6.8+-orange.svg)
+![License](https://img.shields.io/badge/License-MIT-yellow.svg)
 
 ## 项目简介
 
