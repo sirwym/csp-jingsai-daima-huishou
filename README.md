@@ -1,9 +1,9 @@
 # 竞赛回收系统 (CSP Contest Code Recovery System)
 
-![Python](https://img.shields.io/badge/Python-3.13+-blue.svg)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-green.svg)
-![PySide6](https://img.shields.io/badge/PySide6-6.8+-orange.svg)
-![License](https://img.shields.io/badge/License-MIT-yellow.svg)
+!\[Python]\(<https://img.shields.io/badge/Python-3.13+-blue.svg> null)
+!\[FastAPI]\(<https://img.shields.io/badge/FastAPI-0.115+-green.svg> null)
+!\[PySide6]\(<https://img.shields.io/badge/PySide6-6.8+-orange.svg> null)
+!\[License]\(<https://img.shields.io/badge/License-MIT-yellow.svg> null)
 
 ## 项目简介
 
@@ -53,14 +53,13 @@
 
 ```
 .
-├── main.py                 # 主控台入口（PySide6 GUI）
 ├── server.py               # FastAPI Web 服务
 ├── init_env.py             # 环境初始化脚本
 ├── build.sh                # macOS/Linux 打包脚本
 ├── build.bat               # Windows 打包脚本
 ├── package.json            # Node.js 依赖（TailwindCSS）
-├── students.csv            # 考生信息表（自动生成）
-├── exam_instructions.md    # 考试须知（自动生成）
+├── students.csv            # 考生信息表（自动生成 可修改）
+├── exam_instructions.md    # 考试须知（自动生成 可修改）
 ├── problems.zip            # 题目压缩包（需自备）
 ├── .exam_state.json        # 考试状态持久化
 ├── notifications.json      # 通知消息存储
@@ -83,65 +82,9 @@
 │   ├── logo.png            # 系统 Logo
 │   ├── icon.ico            # Windows 图标
 │   └── icon.icns           # macOS 图标
-└── .venv/                  # Python 虚拟环境
+└── main.py                 # 主控台入口（PySide6 GUI）
+
 ```
-
-***
-
-## 快速开始
-
-### 环境要求
-
-- **操作系统**: Windows 10+ / macOS 12+ / Linux
-- **Python**: 3.13 或更高版本
-- **Node.js**: 18+（可选，用于重新编译 CSS）
-
-### 安装步骤
-
-1. **克隆仓库**
-   ```bash
-   git clone <repository-url>
-   cd CSP竞赛局域网代码回收系统
-   ```
-2. **创建虚拟环境并安装依赖**
-   ```bash
-   python -m venv .venv
-   source .venv/bin/activate  # macOS/Linux
-   # 或 .venv\Scripts\activate  # Windows
-
-   pip install -r requirements.txt
-   ```
-3. **安装前端依赖（可选）**
-   ```bash
-   npm install
-   npm run build:css
-   ```
-
-### 启动方式
-
-#### 开发模式
-
-```bash
-# 直接运行主控台
-python main.py
-```
-
-#### 打包为可执行文件
-
-**Windows:**
-
-```bash
-build.bat
-```
-
-**macOS/Linux:**
-
-```bash
-chmod +x build.sh
-./build.sh
-```
-
-打包完成后，可执行文件位于 `dist/` 目录下。
 
 ***
 
@@ -153,8 +96,8 @@ chmod +x build.sh
 
 ```csv
 exam_id,name,password
-1001,张三,123456
-1002,李四,abcdef
+HA-001,张三,123456
+HA-002,李四,abcdef
 ```
 
 ### 2. 准备题目压缩包
@@ -231,7 +174,6 @@ http://{服务器IP}:{端口}
 2. 考生设备与服务器处于同一局域网
 3. 通过服务器内网 IP 访问
 
-
 ## 开发指南
 
 ### 重新编译 CSS
@@ -281,7 +223,7 @@ A: 检查主控台倒计时是否归零，或 `.exam_state.json` 中的 `is_runn
 A: 每次点击"开始考试"时，系统会自动清空 `notifications.json` 和 `system.log`。如需清空考生代码，请手动删除 `data/` 目录。
 
 **Q: macOS 打包后无法运行？**\
-A: 请确保在"系统偏好设置 -> 安全性与隐私"中允许该应用运行。
+A: 右键打开可以绕过或者`xattr -rd com.apple.quarantine xxx.app`。
 
 ***
 
