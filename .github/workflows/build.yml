@@ -38,6 +38,7 @@ jobs:
     # --- 核心修改部分：将打包步骤按操作系统拆分 ---
     - name: Build application (Windows)
       if: matrix.os == 'windows-latest'
+      shell: cmd
       run: build.bat
 
     - name: Build application (macOS)
