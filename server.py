@@ -122,14 +122,23 @@ def get_problems():
                 # 排除 macOS 系统文件和隐藏文件
                 if item.startswith('__MACOSX') or '.DS_Store' in item:
                     continue
-                # 处理中文乱码
+                
+                # 处理中文乱码：兼容旧版 GBK 压缩和新版 UTF-8 压缩
                 try:
-                    decoded = item.encode('cp437').decode('utf-8')
-                except UnicodeDecodeError:
+                    # 尝试还原被错误解析的字节
+                    raw_bytes = item.encode('cp437')
                     try:
-                        decoded = item.encode('cp437').decode('gbk')
+                        decoded = raw_bytes.decode('utf-8')
                     except UnicodeDecodeError:
-                        decoded = item
+                        try:
+                            decoded = raw_bytes.decode('gbk')
+                        except UnicodeDecodeError:
+                            decoded = item
+                except UnicodeEncodeError:
+                    # 如果报错 'charmap can't encode'，说明 item 已经是完美正确的中文了
+                    # (新版压缩软件已经处理好，不需要我们再折腾)
+                    decoded = item
+                    
                 valid_paths.append(decoded)
             
             # 2. 梳理第一层结构
@@ -222,19 +231,28 @@ def verify_token(token: str):
 
 def authenticate_student(student_id: str, password: str):
     """验证学生身份
-    从 students.csv 中查找学生信息
+    从 students.csv 中查找学生信息，兼容 UTF-8 和 GBK 编码
     """
     students_csv = Path("./students.csv")
     if not students_csv.exists():
         return False
     
     try:
-        with open(students_csv, "r", encoding="utf-8") as f:
-            reader = csv.DictReader(f)
-            for row in reader:
-                if row.get("exam_id") == student_id:
-                    # 验证密码
-                    return row.get("password") == password
+        # 先尝试使用 utf-8-sig (兼容带 BOM 的 UTF-8)
+        try:
+            with open(students_csv, "r", encoding="utf-8-sig") as f:
+                reader = csv.DictReader(f)
+                rows = list(reader)
+        except UnicodeDecodeError:
+            # 如果报错，说明是 Windows Excel 默认保存的 GBK 编码
+            with open(students_csv, "r", encoding="gbk") as f:
+                reader = csv.DictReader(f)
+                rows = list(reader)
+
+        for row in rows:
+            if row.get("exam_id") == student_id:
+                # 验证密码
+                return row.get("password") == password
         return False
     except Exception as e:
         logger.error(f"读取 students.csv 失败: {e}")
@@ -525,15 +543,23 @@ def get_current_student(authorization: str = Header(...)):
         raise HTTPException(status_code=404, detail="学生信息不存在")
     
     try:
-        with open(students_csv, "r", encoding="utf-8") as f:
-            reader = csv.DictReader(f)
-            for row in reader:
-                if row.get("exam_id") == student_id:
-                    # 只返回安全的字段，不返回 password
-                    return {
-                        "exam_id": row["exam_id"],
-                        "name": row["name"]
-                    }
+        # 兼容读取逻辑
+        try:
+            with open(students_csv, "r", encoding="utf-8-sig") as f:
+                reader = csv.DictReader(f)
+                rows = list(reader)
+        except UnicodeDecodeError:
+            with open(students_csv, "r", encoding="gbk") as f:
+                reader = csv.DictReader(f)
+                rows = list(reader)
+
+        for row in rows:
+            if row.get("exam_id") == student_id:
+                # 只返回安全的字段，不返回 password
+                return {
+                    "exam_id": row["exam_id"],
+                    "name": row["name"]
+                }
         # 没找到匹配的学生
         raise HTTPException(status_code=404, detail="学生信息不存在")
     except Exception as e:
